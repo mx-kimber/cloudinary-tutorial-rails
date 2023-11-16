@@ -2,7 +2,11 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-
+  config.cloudinary = {
+    cloud_name: '***',
+    api_key: '****',
+    api_secret: '*****'
+  }
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
