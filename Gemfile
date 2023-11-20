@@ -70,3 +70,4 @@ end
 
 gem 'cloudinary'
 gem 'rack-cors'
+gem 'figaro'
