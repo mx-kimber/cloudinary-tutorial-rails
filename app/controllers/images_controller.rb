@@ -1,25 +1,24 @@
 class ImagesController < ApplicationController
   before_action :set_image, only: %i[ show edit update destroy ]
 
-  # GET /images or /images.json
+
   def index
     @images = Image.all
   end
 
-  # GET /images/1 or /images/1.json
+ 
   def show
   end
 
-  # GET /images/new
+ 
   def new
     @image = Image.new
   end
 
-  # GET /images/1/edit
   def edit
   end
 
-  # POST /images or /images.json
+
   def create
     @image = Image.new(image_params)
 
@@ -34,7 +33,7 @@ class ImagesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /images/1 or /images/1.json
+
   def update
     respond_to do |format|
       if @image.update(image_params)
@@ -47,7 +46,7 @@ class ImagesController < ApplicationController
     end
   end
 
-  # DELETE /images/1 or /images/1.json
+
   def destroy
     @image.destroy!
 
@@ -57,14 +56,25 @@ class ImagesController < ApplicationController
     end
   end
 
+
+  def upload_image
+    file = params[:file]
+  
+    cloudinary_response = Cloudinary::Uploader.upload(file.path, upload_preset: ENV['CLOUDINARY_UPLOAD_PRESET'])
+  
+    render json: cloudinary_response
+  end
+  
+  
+
+
+
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_image
       @image = Image.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def image_params
-      params.require(:image).permit(:cloudinary_photo)
+      params.require(:image).permit(:file, :cloudinary_photo)
     end
 end
