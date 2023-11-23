@@ -3,7 +3,11 @@ class ImagesController < ApplicationController
 
 
   def index
-    @images = Image.all
+    @cloudinary_images = Cloudinary::Api.resources(type: "upload", max_results: 100)
+
+    respond_to do |format|
+      format.json { render json: @cloudinary_images }
+    end
   end
 
  
