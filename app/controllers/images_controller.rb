@@ -64,13 +64,17 @@ class ImagesController < ApplicationController
   def upload_image
     file = params[:file]
   
-    cloudinary_response = Cloudinary::Uploader.upload(file.path, upload_preset: ENV['CLOUDINARY_UPLOAD_PRESET'])
+    transformation_preset = "sepiaThumb"
+
+    cloudinary_response = Cloudinary::Uploader.upload(
+      file.path,
+      upload_preset: ENV['CLOUDINARY_UPLOAD_PRESET'],
+      transformation: { transformation: transformation_preset }
+    )
   
     render json: cloudinary_response
   end
   
-  
-
 
 
   private
