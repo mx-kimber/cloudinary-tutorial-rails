@@ -3,7 +3,8 @@ class ImagesController < ApplicationController
 
 
   def index
-    @cloudinary_images = Cloudinary::Api.resources(type: "upload", max_results: 100)
+    folder_name = 'PridefulPack'
+    @cloudinary_images = Cloudinary::Api.resources(type: 'upload', max_results: 100, prefix: folder_name)
 
     respond_to do |format|
       format.json { render json: @cloudinary_images }
@@ -63,12 +64,13 @@ class ImagesController < ApplicationController
 
   def upload_image
     file = params[:file]
-  
-    transformation_preset = "sepiaThumb"
+    folder_name = 'PridefulPack'
+    transformation_preset = 'scaleFill'
 
     cloudinary_response = Cloudinary::Uploader.upload(
       file.path,
       upload_preset: ENV['CLOUDINARY_UPLOAD_PRESET'],
+      folder: folder_name,
       transformation: { transformation: transformation_preset }
     )
   
