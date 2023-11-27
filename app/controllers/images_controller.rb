@@ -67,27 +67,40 @@ class ImagesController < ApplicationController
     folder_name = 'PridefulPack'
     transformation_preset = 'scaleFill'
   
-    # Use the original filename to find the existing image
-    existing_image = Image.find_by(cloudinary_photo: file.original_filename)
-  
-    # Do nothing if the image with the same name is already present
-    return if existing_image
-  
     begin
+      search_result = Cloudinary::Api.resource(file.original_filename)
+  
+      if search_result['public_id']
+        render json: { message: 'Image already exists in Cloudinary', public_id: search_result['public_id'] }
+        return
+      end
+  
       cloudinary_response = Cloudinary::Uploader.upload(
         file.path,
         upload_preset: ENV['CLOUDINARY_UPLOAD_PRESET'],
         folder: folder_name,
+        public_id: file.original_filename,
         transformation: { transformation: transformation_preset }
       )
   
-      Image.create!(cloudinary_photo: file.original_filename, public_id: cloudinary_response['public_id'])
+      # Image.create!(cloudinary_photo: file.original_filename, public_id: cloudinary_response['public_id'])
 
       render json: cloudinary_response
-    rescue CloudinaryException => except
-      Rails.logger.error("Error uploading image to Cloudinary: #{except.message}")
+    rescue Cloudinary::Api::Error => except
+      if except.message.include?('Resource not found')
+        cloudinary_response = Cloudinary::Uploader.upload(
+          file.path,
+          upload_preset: ENV['CLOUDINARY_UPLOAD_PRESET'],
+          folder: folder_name,
+          public_id: file.original_filename,
+          transformation: { transformation: transformation_preset }
+        )
   
-      render json: { error: 'Error uploading image to Cloudinary' }, status: :internal_server_error
+        render json: cloudinary_response
+      else
+        Rails.logger.error("Error uploading image to Cloudinary: #{except.message}")
+        render json: { error: 'Error uploading image to Cloudinary' }, status: :internal_server_error
+      end
     end
   end
   
