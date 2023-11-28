@@ -41,7 +41,37 @@ rails db:create
 rails db:migrate
 rails db:seed 
 ```
+
+## How To Setup Environmental Variables to prevent accidental exposure of sensitive information 
+
+* Add gem 'figaro' to Gemfile if it's not present. 
+
+* Run ``` bundle update ``` to ensure all gems are up to date.
+
+* Run ``` bundle exec figaro install ```  ( This will create a config/application.yml file and add it to .gitignore )
+
+* Add your Cloudinary API credentials & variables in config/application.yml
+  
+If you do not have a Cloudinary accout, visit https://www.cloudinary.com/
+
+Cloudinary documentation: https://cloudinary.com/documentation/
+
+Add to application.yml:
+```
+CLOUDINARY_API_KEY: "your_api_key"
+CLOUDINARY_API_SECRET: "your_api_secret"
+CLOUDINARY_CLOUD_NAME: "your_cloud_name"
+CLOUDINARY_UPLOAD_PRESET: "your_upload_preset"
+```
+
+Access API credentials though ENV["CLOUDINARY_NAME"] and similar calls.
+
 ---
+
+
+
+
+
 ## 💎 Current list of all installed dependencies 💎
 ```
 bundle list
